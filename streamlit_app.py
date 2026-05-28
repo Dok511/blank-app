@@ -1,51 +1,33 @@
 import streamlit as st
-import requests
-import json
 import time
 
 # إعدادات الصفحة
-st.set_page_config(page_title="منصة لاست دانس المزاودة ", page_icon="🔨", layout="centered")
+st.set_page_config(page_title="منصة لاست دانس للمزاودة", page_icon="🔨", layout="centered")
 
-# رابط السيرفر السحابي المشترك (رابط وهمي مخصص لمزادك لجعل البيانات لايف وموحدة للجميع)
-# ملاحظة: يمكنك تغيير الرقم 8518 لأي رقم سري خاص بك لضمان خصوصية مزادك
-DB_URL = "https://api.keyvalue.xyz/7c3b2e5a/salman_auction_2026"
-ITEM_IMAGE_URL = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1000"
+# رابط صورة السلعة
+ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1063839574457069661/1509394032168534158/2026-03-07_005051.png?ex=6a19043c&is=6a17b2bc&hm=a0ae2407865a47c008a90030f80e636e5edac5d6e4fc5186f771eb6d666eee3a"
 
-# دالة لجلب البيانات الحية من السيرفر للجميع
-def get_live_data():
-    try:
-        response = requests.get(DB_URL)
-        if response.status_code == 200:
-            return json.loads(response.text)
-    except:
-        pass
-    # إذا كانت أول مرة والموقع فاضي، يرجع البيانات الابتدائية (5000 ريال)
-    return {"item_name": "السلعة المميزة", "current_price": 5000, "highest_bidder": "لا يوجد مزايد حالياً"}
+# الاتصال بقاعدة بيانات Streamlit المباشرة للجميع
+conn = st.connection("local_db", type="dict")
 
-# دالة لحفظ المزاودة الجديدة في السيرفر السحابي فوراً
-def save_live_data(price, bidder):
-    data = {"item_name": "السلعة المميزة", "current_price": price, "highest_bidder": bidder}
-    try:
-        requests.post(DB_URL, data=json.dumps(data))
-    except:
-        st.error("عذراً، حدث خطأ في الاتصال بالسيرفر المباشر!")
+# جلب البيانات الحية أو وضع بيانات ابتدائية لو كانت أول مرة
+if "current_price" not in conn:
+    conn["current_price"] = 5000
+    conn["highest_bidder"] = "لا يوجد مزايد حالياً"
 
-# جلب البيانات الحالية الحية
-live_data = get_live_data()
-
-st.title("🔨 منصة المزاودة الحية والمباشرة 🚀")
-st.write("هذه الصفحة تُحدّث لايف، وأي شخص يزاود يظهر اسمه وسعره عند الجميع فوراً!")
+st.title("🔨 منصة لاست دانس للمزاودة  🚀")
+st.write("هذه الصفحة تُحدّث تلقائياً كل ثانيتين، وأي شخص يزاود يظهر سعره عند الجميع فوراً!")
 st.write("---")
 
 # عرض الصورة
-st.image(ITEM_IMAGE_URL, caption="صورة السلعة المعروضة", use_container_width=True)
+st.image(ITEM_IMAGE_URL, caption="صورة السلعة كورفت س 7", use_container_width=True)
 
 # عرض الأسعار الحية الحقيقية القادمة من السيرفر للكل
 col1, col2 = st.columns(2)
 with col1:
-    st.info(f"💰 **أعلى سعر حالي:**\n\n ### {live_data['current_price']} ريال")
+    st.info(f"💰 **أعلى سعر حالي:**\n\n ### {conn['current_price']} ريال")
 with col2:
-    st.success(f"👤 **المتصدّر الآن:**\n\n ### {live_data['highest_bidder']}")
+    st.success(f"👤 **المتصدّر الآن:**\n\n ### {conn['highest_bidder']}")
 
 st.write("---")
 
@@ -54,7 +36,7 @@ st.subheader("سجّل سومك المباشر الآن 👇")
 user_name = st.text_input("اسم المزايد الكامل:", placeholder="اكتب اسمك هنا")
 
 # حساب أقل سومة مسموحة (السعر الحالي + 100 ريال زيادة)
-min_next_bid = int(live_data['current_price']) + 5000
+min_next_bid = int(conn["current_price"]) + 5000
 
 bid_amount = st.number_input("قيمة مزاودتك (ريال):", min_value=min_next_bid, value=min_next_bid, step=5000)
 
@@ -63,12 +45,14 @@ if st.button("🚀 اعتمد السومة لايف"):
         st.error("الرجاء كتابة اسمك أولاً!")
     else:
         # حفظ البيانات في السيرفر السحابي فوراً ليراها الجميع
-        save_live_data(bid_amount, user_name)
+        conn["current_price"] = bid_amount
+        conn["highest_bidder"] = user_name
         st.balloons()
-        st.success(f"كفو يا {user_name}! تم تحديث المزاد عالمياً بقيمة {bid_amount} ريال.")
+        st.success(f"كفو يا {user_name}! تم تحديث المزاد عند الجميع بقيمة {bid_amount} ريال.")
         time.sleep(1)
         st.rerun()
 
-# زر التحديث اليدوي الفوري
-if st.button("🔄 تحديث ورؤية السومات الجديدة"):
-    st.rerun()
+st.write("---")
+# 🔄 كود التحديث التلقائي الذكي (يجبر الصفحة تتحدث كل ثانيتين بدون تدخل منك)
+time.sleep(2)
+st.rerun()
