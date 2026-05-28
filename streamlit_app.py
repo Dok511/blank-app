@@ -2,19 +2,19 @@ import streamlit as st
 import time
 
 # إعدادات الصفحة
-st.set_page_config(page_title="منصة المزاودة الملكية", page_icon="🔨", layout="centered")
+st.set_page_config(page_title="منصة المزاودة لا سيرفر لاست دانس ", page_icon="🔨", layout="centered")
 
 # --- بيانات المزاد (تعديل السعر والصورة من هنا) ---
 STARTING_PRICE = 5000 # السعر اللي يبدأ منه المزاد
 # ضع رابط صورتك هنا (بين علامتي التنصيص)
-ITEM_IMAGE_URL = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1000" 
+ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1063839574457069661/1509394032168534158/2026-03-07_005051.png?ex=6a19043c&is=6a17b2bc&hm=a0ae2407865a47c008a90030f80e636e5edac5d6e4fc5186f771eb6d666eee3a" 
 
 if 'auction_data' not in st.session_state:
     st.session_state.auction_data = {
-        "item_name": "السلعة المعروضة (اكتب اسمها هنا)",
+        "item_name": "السلعة المعروضة (كورفت c7)",
         "current_price": STARTING_PRICE,
         "highest_bidder": "لا يوجد مزايد حالياً",
-        "end_time": time.time() + 3600  # المزاد ينتهي بعد ساعة
+        "end_time": time.time() + 3600  # المزاد ينتهي بعد 5 دقايق
     }
 
 st.title("🔨 منصة المزاودة الحية")
@@ -33,7 +33,7 @@ with col2:
 # حساب الوقت
 remaining_time = int(st.session_state.auction_data['end_time'] - time.time())
 if remaining_time > 0:
-    st.warning(f"⏳ **الوقت المتبقي:** {remaining_time // 60} دقيقة و {remaining_time % 60} ثانية")
+    st.warning(f"⏳ **الوقت المتبقي:** {remaining_time // 4} دقيقة و {remaining_time % 60} ثانية")
 else:
     st.error("🚨 انتهى المزاد!")
 
