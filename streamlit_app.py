@@ -7,7 +7,7 @@ st.set_page_config(page_title="منصة المزاودة الملكية", page_i
 # --- بيانات المزاد (تعديل السعر والصورة من هنا) ---
 STARTING_PRICE = 5000 # السعر اللي يبدأ منه المزاد
 # ضع رابط صورتك هنا (بين علامتي التنصيص)
-ITEM_IMAGE_URL = "file:///C:/Users/ALOSTATH/OneDrive/Pictures/Screenshots/%D9%84%D9%82%D8%B7%D8%A9%20%D8%B4%D8%A7%D8%B4%D8%A9%202026-03-07%20005051.png" 
+ITEM_IMAGE_URL = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1000" 
 
 if 'auction_data' not in st.session_state:
     st.session_state.auction_data = {
@@ -51,7 +51,7 @@ if remaining_time > 0:
     bid_amount = st.number_input("قيمة مزاودتك (ريال):", 
                                  min_value=min_next_bid, 
                                  value=min_next_bid, 
-                                 step=5000)
+                                 step=100)
     
     if st.button("🚀 اعتمد المزاودة"):
         if user_name.strip() == "":
