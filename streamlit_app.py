@@ -8,8 +8,8 @@ st.set_page_config(page_title="منصة المزاودة لا سيرفر لست 
 ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1509405559864950804/1509407923166773398/800px-Visione.webp?ex=6a19112c&is=6a17bfac&hm=91f82e24b96b57ae356667d0aee1c87c49def34e2ca8ccb3dc96d65014e3ba43"
 
 # 🛑 القائمة السوداء للأرقام المتبندة 🛑
-# اكتب هنا رقم جوال الشخص اللي تبي تبنده (تقدر تضيف أكثر من رقم وتفصل بينهم بفاصلة)
-BANNED_PHONES = ["0555555555", "0500000000"] 
+# اكتب هنا حسابك دسكورد الشخص اللي تبي تبنده (تقدر تضيف أكثر من رقم وتفصل بينهم بفاصلة)
+BANNED_PHONES = ["i_dok", "0500000000"] 
 
 # إنشاء ذاكرة مشتركة حية على السيرفر لجميع المستخدمين
 @st.cache_resource
@@ -71,17 +71,17 @@ with col_main:
     if remaining_time > 0:
         st.subheader("سجّل سومك المباشر الآن 👇")
         
-        # خانات الإدخال (اسم المزايد + رقم الجوال لقفش المتبندين)
+        # خانات الإدخال (اسم المزايد + حسابك دسكورد لقفش المتبندين)
         user_name = st.text_input("اسم المزايد الكامل:", placeholder="اكتب اسمك هنا")
-        user_phone = st.text_input("رقم الجوال:", placeholder="05xxxxxxxx")
+        user_phone = st.text_input("حسابك دسكورد:", placeholder="05xxxxxxxx")
 
         # حساب أقل سومة مسموحة (السعر الحالي + 5000 ريال زيادة حسب وزنيتك)
         min_next_bid = int(db["current_price"]) + 5000
-        bid_amount = st.number_input("قيمة مزاودتك (ريال):", min_value=min_next_bid, value=min_next_bid, step=5000)
+        bid_amount = st.number_input("قيمة مزاودتك ($):", min_value=min_next_bid, value=min_next_bid, step=5000)
 
         if st.button("🚀 اعتمد السومة لايف"):
             if user_name.strip() == "" or user_phone.strip() == "":
-                st.error("الرجاء كتابة اسمك ورقم جوالك أولاً!")
+                st.error("الرجاء كتابة اسمك حسابك دسكورد أولاً!")
             
             # ⛔ التحقق من البند (الحظر) ⛔
             elif user_phone.strip() in BANNED_PHONES:
