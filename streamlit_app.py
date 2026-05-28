@@ -36,9 +36,9 @@ st.subheader("سجّل سومك المباشر الآن 👇")
 user_name = st.text_input("اسم المزايد الكامل:", placeholder="اكتب اسمك هنا")
 
 # حساب أقل سومة مسموحة (السعر الحالي + 100 ريال زيادة)
-min_next_bid = int(db["current_price"]) + 100
+min_next_bid = int(db["current_price"]) + 5000
 
-bid_amount = st.number_input("قيمة مزاودتك (ريال):", min_value=min_next_bid, value=min_next_bid, step=100)
+bid_amount = st.number_input("قيمة مزاودتك (ريال):", min_value=min_next_bid, value=min_next_bid, step=5000)
 
 if st.button("🚀 اعتمد السومة لايف"):
     if user_name.strip() == "":
