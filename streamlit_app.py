@@ -2,61 +2,69 @@ import streamlit as st
 import time
 
 # إعدادات الصفحة
-st.set_page_config(page_title="منصة المزاد الحية", page_icon="🔨", layout="centered")
+st.set_page_config(page_title="منصة المزاودة الملكية", page_icon="🔨", layout="centered")
 
-# دالة لقراءة وتخزين البيانات في ذاكرة السيرفر المشتركة لجميع المستخدمين
+# --- بيانات المزاد (تعديل السعر والصورة من هنا) ---
+STARTING_PRICE = 5000 # السعر اللي يبدأ منه المزاد
+# ضع رابط صورتك هنا (بين علامتي التنصيص)
+ITEM_IMAGE_URL = "file:///C:/Users/ALOSTATH/OneDrive/Pictures/Screenshots/%D9%84%D9%82%D8%B7%D8%A9%20%D8%B4%D8%A7%D8%B4%D8%A9%202026-03-07%20005051.png" 
+
 if 'auction_data' not in st.session_state:
     st.session_state.auction_data = {
-        "item_name": "سلعة مميزة (تستطيع تغيير الاسم من الكود)",
-        "current_price": 100,  # السعر الابتدائي
-        "highest_bidder": "لا أحد حتى الآن",
-        "end_time": time.time() + 3600  # وقت انتهاء المزاد (بعد ساعة)
+        "item_name": "السلعة المعروضة (سياره كورفت c7)",
+        "current_price": STARTING_PRICE,
+        "highest_bidder": "لا يوجد مزايد حالياً",
+        "end_time": time.time() + 3600  # المزاد ينتهي بعد خمس دقايق
     }
 
 st.title("🔨 منصة المزاودة الحية")
-st.write("مرحباً بكم في المزاد! المزاودة تحدّث تلقائياً عند الجميع.")
 st.write("---")
 
-# عرض تفاصيل المزاد الحالية في بطاقات ملونة
+# --- عرض صورة السلعة ---
+st.image(ITEM_IMAGE_URL, caption="صورة السلعة المعروضة للمزاودة", use_container_width=True)
+
+# --- عرض الأسماء والأسعار في بطاقات فخمة ---
 col1, col2 = st.columns(2)
 with col1:
-    st.metric(label="💰 أعلى سعر الحالي", value=f"{st.session_state.auction_data['current_price']} ريال")
+    st.info(f"💰 **أعلى سعر حالي:**\n\n ### {st.session_state.auction_data['current_price']} ريال")
 with col2:
-    st.metric(label="👤 صاحب أعلى سعر", value=st.session_state.auction_data['highest_bidder'])
+    st.success(f"👤 **المتصدّر الآن:**\n\n ### {st.session_state.auction_data['highest_bidder']}")
 
-# حساب الوقت المتبقي للمزاد
+# حساب الوقت
 remaining_time = int(st.session_state.auction_data['end_time'] - time.time())
 if remaining_time > 0:
-    st.warning(f"⏳ الوقت المتبقي للمزاد: {remaining_time // 60} دقيقة و {remaining_time % 60} ثانية")
+    st.warning(f"⏳ **الوقت المتبقي:** {remaining_time // 4} دقيقة و {remaining_time % 60} ثانية")
 else:
-    st.error("🚨 انتهى وقت المزاد رسميًا!")
+    st.error("🚨 انتهى المزاد!")
 
 st.write("---")
 
-# منطقة المزاودة
+# --- منطقة دخول المزايدين ---
 if remaining_time > 0:
-    st.subheader("شارك وسجّل مزاودتك الآن 👇")
+    st.subheader("سجّل مزاودتك الآن 👇")
     
-    # إدخال اسم المزايد
-    user_name = st.text_input("أدخل اسمك بالكامل:", key="user_name")
+    user_name = st.text_input("اسم المزايد:", placeholder="اكتب اسمك الثلاثي")
     
-    # تحديد القيمة (تلقائياً تكون أعلى من السعر الحالي بـ 10 ريال)
-    min_next_bid = st.session_state.auction_data['current_price'] + 10
-    bid_amount = st.number_input("قيمة مزاودتك (ريال):", min_value=min_next_bid, value=min_next_bid, step=10)
+    # أقل مزاودة قادمة (السعر الحالي + 5000 ريال كزيادة منطقية)
+    min_next_bid = st.session_state.auction_data['current_price'] + 100
     
-    if st.button("🚀 اضغط لاعتماد المزاودة"):
+    bid_amount = st.number_input("قيمة مزاودتك (ريال):", 
+                                 min_value=min_next_bid, 
+                                 value=min_next_bid, 
+                                 step=5000)
+    
+    if st.button("🚀 اعتمد المزاودة"):
         if user_name.strip() == "":
-            st.error("الرجاء كتابة اسمك أولاً لتتمكن من المزاودة!")
+            st.error("مزاد سيرفر لاست دانس !")
         else:
-            # تحديث البيانات المشتركة للسيرفر
             st.session_state.auction_data['current_price'] = bid_amount
+            st.session_state.auction_state = True # للتحديث
             st.session_state.auction_data['highest_bidder'] = user_name
-            st.success(f"تم تسجيل مزاودتك بنجاح بقيمة {bid_amount} ريال باسم {user_name}!")
-            time.sleep(1)
+            st.balloons() # احتفال بسيط عند كل مزاودة
+            st.success(f"كفو يا {user_name}! سومتك {bid_amount} هي الأعلى الآن.")
+            time.sleep(2)
             st.rerun()
-else:
-    st.success(f"🎉 مبروك للفائز بالمزاد: {st.session_state.auction_data['highest_bidder']} بقيمة {st.session_state.auction_data['current_price']} ريال")
 
-# زر لتحديث الصفحة يدوياً لرؤية آخر الأسعار
-if st.button("🔄 تحديث الأسعار"):
-    st.rerun()
+# زر تحديث يدوي
+if st.button("🔄 تحديث حالة المزاد"):
+    st.rerun
