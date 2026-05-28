@@ -8,7 +8,7 @@ st.set_page_config(page_title="منصة المزاودة لا سيرفر لست 
 ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1509405559864950804/1509407923166773398/800px-Visione.webp?ex=6a19112c&is=6a17bfac&hm=91f82e24b96b57ae356667d0aee1c87c49def34e2ca8ccb3dc96d65014e3ba43"
 
 # 🛑 القائمة السوداء لحسابات الديسكورد المتبندة 🛑
-# اكتب هنا يوزر ديسكورد الشخص اللي تبي تبنده (اكتبه بدقة مثل: salman123)
+# اكتب هنا يوزر ديسكورد الشخص اللي تبي تبنده (اكتبه بدقة مثل: g)
 BANNED_DISCORD_ACCOUNTS = ["banned_user_here", "another_banned_user"] 
 
 # إنشاء ذاكرة مشتركة حية على السيرفر لجميع المستخدمين
