@@ -32,6 +32,6 @@ st.markdown("""
     <div class="closed-container">
         <div class="lock-icon">🔒</div>
         <div class="main-title">المزاد مغلق حالياً</div>
-        <div class="sub-title">تم انتهاء وقت المزاودة رسميًا وإغلاق المنصة.</div>
+        <div class="sub-title">LD1 تم انتهاء وقت المزاودة رسميًا واختصار الدسكورد .</div>
     </div>
 """, unsafe_allow_html=True)
