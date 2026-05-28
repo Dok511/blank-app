@@ -5,7 +5,7 @@ import time
 st.set_page_config(page_title="منصة المزاودة لا سيرفر لست دانس المباشرة", page_icon="🔨", layout="wide")
 
 # رابط صورة السلعة
-ITEM_IMAGE_URL = "https://wiki.rage.mp/w/images/thumb/0/01/Visione.png/800px-Visione.png?20180301202114"
+ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1509405559864950804/1509407923166773398/800px-Visione.webp?ex=6a19112c&is=6a17bfac&hm=91f82e24b96b57ae356667d0aee1c87c49def34e2ca8ccb3dc96d65014e3ba43"
 
 # إنشاء ذاكرة مشتركة حية على السيرفر لجميع المستخدمين
 @st.cache_resource
