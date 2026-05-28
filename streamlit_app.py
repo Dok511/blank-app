@@ -1,104 +1,52 @@
 import streamlit as st
-import time
 
 # إعدادات الصفحة
-st.set_page_config(page_title="منصة المزاودة لا سيرفر لست دانس المباشرة", page_icon="🔨", layout="wide")
+st.set_page_config(page_title="المزاد مغلق", page_icon="🔒", layout="centered")
 
-# رابط صورة السلعة
-ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1063839574457069661/1509394032168534158/2026-03-07_005051.png?ex=6a19043c&is=6a17b2bc&hm=a0ae2407865a47c008a90030f80e636e5edac5d6e4fc5186f771eb6d666eee3a"
+# --- اكتب بيانات الفائز الحقيقي هنا ---
+FINAL_PRICE = 6400  # السعر النهائي اللي وقف عنده المزاد
+WINNER_NAME = "سلمان"  # اسم الشخص اللي فاز بالسلعة
 
-# إنشاء ذاكرة مشتركة حية على السيرفر لجميع المستخدمين
-@st.cache_resource
-def get_global_db():
-    return {
-        "current_price": 5000, 
-        "highest_bidder": "لا يوجد مزايد حالياً",
-        "end_time": time.time() + 300,  # 5 دقائق
-        "history": []  # قائمة لتخزين سجل المزاودات السابقة
+# تنسيق الصفحة لجعل القفل والكتابة في المنتصف بشكل كبير
+st.markdown("""
+    <style>
+    .closed-container {
+        text-align: center;
+        padding: 40px;
     }
+    .lock-icon {
+        font-size: 100px;
+        margin-bottom: 10px;
+    }
+    .main-title {
+        font-size: 45px;
+        color: #FF4B4B;
+        font-weight: bold;
+    }
+    .winner-box {
+        background-color: #1E1E1E;
+        border: 2px solid #262626;
+        padding: 30px;
+        border-radius: 15px;
+        margin-top: 30px;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.5);
+    }
+    </style>
+""", unsafe_allow_html=True)
 
-# استدعاء الذاكرة المشتركة
-db = get_global_db()
-
-st.title("🔨 منصة المزاودة لا سيرفر لست دانس المباشرة 🚀")
-st.write("---")
-
-# حساب الوقت المتبقي للمزاد لايف
-remaining_time = int(db["end_time"] - time.time())
-
-# تقسم الشاشة إلى عمودين كبيرين (عمود للسجل وعمود للمزاد)
-col_history, col_main = st.columns([1, 2])
-
-# ==================== (العمود الأول: سجل المزاودات) ====================
-with col_history:
-    st.subheader("📜 سجل السومات الحالية")
-    if not db["history"]:
-        st.info("لا توجد سومات سابقة حتى الآن. كن أول المزاودين!")
-    else:
-        # عرض السومات مرتبة من الأحدث إلى الأقدم
-        for bid in reversed(db["history"]):
-            st.markdown(f"👤 **{bid['name']}** سام بـ 💰 **{bid['amount']} $**")
-            st.caption(f"⏱️ {bid['time']}")
-            st.write("---")
-
-# ==================== (العمود الثاني: المزاد والسلعة) ====================
-with col_main:
-    # عرض الصورة
-    st.image(ITEM_IMAGE_URL, caption="صورة السلعة المعروضة", use_container_width=True)
-
-    # عرض العداد التنازلي للوقت
-    if remaining_time > 0:
-        minutes = remaining_time // 60
-        seconds = remaining_time % 60
-        st.warning(f"⏳ **الوقت المتبقي للمزاد:** {minutes} دقائق و {seconds} ثوانٍ")
-    else:
-        st.error("🚨 **انتهى وقت المزاد رسميًا!**")
-
-    # عرض الأسعار الحية الحقيقية من السيرفر المشترك
-    c1, c2 = st.columns(2)
-    with c1:
-        st.info(f"💰 **أعلى سعر حالي:**\n\n ### {db['current_price']} ريال")
-    with c2:
-        st.success(f"👤 **المتصدّر الآن:**\n\n ### {db['highest_bidder']}")
-
-    st.write("---")
-
-    # منطقة المزاودة (تشتغل فقط إذا كان هناك وقت متبقي)
-    if remaining_time > 0:
-        st.subheader("سجّل سومك المباشر الآن 👇")
-        user_name = st.text_input("اسم المزايد الكامل:", placeholder="اكتب اسمك هنا")
-
-        # حساب أقل سومة مسموحة (السعر الحالي + 100 ريال زيادة)
-        min_next_bid = int(db["current_price"]) + 5000
-        bid_amount = st.number_input("قيمة مزاودتك (ريال):", min_value=min_next_bid, value=min_next_bid, step=5000)
-
-        if st.button("🚀 اعتمد السومة لايف"):
-            if user_name.strip() == "":
-                st.error("الرجاء كتابة اسمك أولاً!")
-            else:
-                # توقيت السومة الحالي
-                current_time_str = time.strftime('%H:%M:%S', time.localtime())
-                
-                # إضافة السومة الحالية في السجل (History)
-                db["history"].append({
-                    "name": user_name,
-                    "amount": bid_amount,
-                    "time": current_time_str
-                })
-                
-                # تحديث السعر الحالي والممتصدر
-                db["current_price"] = bid_amount
-                db["highest_bidder"] = user_name
-                
-                st.balloons()
-                st.success(f"كفو يا {user_name}! تم تحديث المزاد عند الجميع بقيمة {bid_amount} ريال.")
-                time.sleep(1)
-                st.rerun()
-    else:
-        # رسالة تظهر للجميع عند انتهاء الـ 5 دقائق وتعلن الفائز
-        st.success(f"🎉 **مبروك للفائز بالمزاد:** {db['highest_bidder']} بقيمة {db['current_price']} ريال")
-
-st.write("---")
-# 🔄 إعادة تحديث تلقائي للمتصفح كل ثانيتين لتحديث المؤقت والسومات الجديدة لايف عند الكل
-time.sleep(2)
-st.rerun()
+# عرض القفل الكبير وكلمة المزاد مغلق في المنتصف
+st.markdown(f"""
+    <div class="closed-container">
+        <div class="lock-icon">🔒</div>
+        <div class="main-title">المزاد مغلق حالياً</div>
+        <p style="color: #888888; font-size: 18px;">تم انتهاء وقت المزاودة رسميًا وإغلاق المنصة.</p>
+        
+        <div class="winner-box">
+            <h2 style="color: #00E676; margin-bottom: 15px;">🎉 مبروك للفائز النهائي 🎉</h2>
+            <h3 style="color: #FFFFFF; font-size: 28px; margin: 10px 0;">👤 المشتري: {WINNER_NAME}</h3>
+            <h3 style="color: #00E676; font-size: 32px; margin: 10px 0;">💰 القيمة: {FINAL_PRICE} ريال</h3>
+        </div>
+        
+        <p style="margin-top: 40px; color: #555555; font-size: 14px;">شكرًا لجميع المشاركين على الحماس والدعم.</p>
+    </div>
+""", unsafe_allow_html=True)
