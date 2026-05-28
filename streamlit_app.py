@@ -11,10 +11,10 @@ ITEM_IMAGE_URL = "file:///C:/Users/ALOSTATH/OneDrive/Pictures/Screenshots/%D9%84
 
 if 'auction_data' not in st.session_state:
     st.session_state.auction_data = {
-        "item_name": "السلعة المعروضة (سياره كورفت c7)",
+        "item_name": "السلعة المعروضة (اكتب اسمها هنا)",
         "current_price": STARTING_PRICE,
         "highest_bidder": "لا يوجد مزايد حالياً",
-        "end_time": time.time() + 3600  # المزاد ينتهي بعد خمس دقايق
+        "end_time": time.time() + 3600  # المزاد ينتهي بعد ساعة
     }
 
 st.title("🔨 منصة المزاودة الحية")
@@ -33,7 +33,7 @@ with col2:
 # حساب الوقت
 remaining_time = int(st.session_state.auction_data['end_time'] - time.time())
 if remaining_time > 0:
-    st.warning(f"⏳ **الوقت المتبقي:** {remaining_time // 4} دقيقة و {remaining_time % 60} ثانية")
+    st.warning(f"⏳ **الوقت المتبقي:** {remaining_time // 60} دقيقة و {remaining_time % 60} ثانية")
 else:
     st.error("🚨 انتهى المزاد!")
 
@@ -45,7 +45,7 @@ if remaining_time > 0:
     
     user_name = st.text_input("اسم المزايد:", placeholder="اكتب اسمك الثلاثي")
     
-    # أقل مزاودة قادمة (السعر الحالي + 5000 ريال كزيادة منطقية)
+    # أقل مزاودة قادمة (السعر الحالي + 100 ريال كزيادة منطقية)
     min_next_bid = st.session_state.auction_data['current_price'] + 100
     
     bid_amount = st.number_input("قيمة مزاودتك (ريال):", 
@@ -55,7 +55,7 @@ if remaining_time > 0:
     
     if st.button("🚀 اعتمد المزاودة"):
         if user_name.strip() == "":
-            st.error("مزاد سيرفر لاست دانس !")
+            st.error("يرجى كتابة الاسم لاعتماد السومة!")
         else:
             st.session_state.auction_data['current_price'] = bid_amount
             st.session_state.auction_state = True # للتحديث
@@ -67,4 +67,4 @@ if remaining_time > 0:
 
 # زر تحديث يدوي
 if st.button("🔄 تحديث حالة المزاد"):
-    st.rerun
+    st.rerun()
