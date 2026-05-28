@@ -74,7 +74,7 @@ with col_main:
         
         # خانات الإدخال الجديدة
         user_name = st.text_input("اسم المزايد الكامل:", placeholder="اكتب اسمك هنا")
-        user_discord = st.text_input("حسابك في ديسكورد (Discord Username):", placeholder="مثال: salman_511")
+        user_discord = st.text_input("حسابك في ديسكورد (Discord Username):", placeholder=": --------")
 
         # حساب أقل سومة مسموحة (السعر الحالي + 5000 $ زيادة)
         min_next_bid = int(db["current_price"]) + 5000
