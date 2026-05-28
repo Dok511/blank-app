@@ -73,7 +73,7 @@ with col_main:
         
         # خانات الإدخال (اسم المزايد + حسابك دسكورد لقفش المتبندين)
         user_name = st.text_input("اسم المزايد الكامل:", placeholder="اكتب اسمك هنا")
-        user_phone = st.text_input("حسابك دسكورد:", placeholder="05xxxxxxxx")
+        user_phone = st.text_input("حسابك دسكورد:", placeholder="------")
 
         # حساب أقل سومة مسموحة (السعر الحالي + 5000 ريال زيادة حسب وزنيتك)
         min_next_bid = int(db["current_price"]) + 5000
@@ -81,7 +81,7 @@ with col_main:
 
         if st.button("🚀 اعتمد السومة لايف"):
             if user_name.strip() == "" or user_phone.strip() == "":
-                st.error("الرجاء كتابة اسمك حسابك دسكورد أولاً!")
+                st.error("الرجاء كتابة اسمك وحسابك دسكورد أولاً!")
             
             # ⛔ التحقق من البند (الحظر) ⛔
             elif user_phone.strip() in BANNED_PHONES:
