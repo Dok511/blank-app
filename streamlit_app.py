@@ -7,6 +7,10 @@ st.set_page_config(page_title="منصة المزاودة لا سيرفر لست 
 # رابط صورة السلعة
 ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1509405559864950804/1509407923166773398/800px-Visione.webp?ex=6a19112c&is=6a17bfac&hm=91f82e24b96b57ae356667d0aee1c87c49def34e2ca8ccb3dc96d65014e3ba43"
 
+# 🛑 القائمة السوداء لحسابات الديسكورد المتبندة 🛑
+# اكتب هنا يوزر ديسكورد الشخص اللي تبي تبنده (اكتبه بدقة مثل: g)
+BANNED_DISCORD_ACCOUNTS = ["banned_user_here", "another_banned_user"] 
+
 # إنشاء ذاكرة مشتركة حية على السيرفر لجميع المستخدمين
 @st.cache_resource
 def get_global_db():
@@ -27,7 +31,7 @@ st.write("---")
 remaining_time = int(db["end_time"] - time.time())
 
 # تقسم الشاشة إلى عمودين كبيرين (عمود للسجل وعمود للمزاد)
-col_history, col_main = st.columns([1, 2])
+col_history, col_main = st.columns([1.2, 2])
 
 # ==================== (العمود الأول: سجل المزاودات) ====================
 with col_history:
@@ -35,9 +39,10 @@ with col_history:
     if not db["history"]:
         st.info("لا توجد سومات سابقة حتى الآن. كن أول المزاودين!")
     else:
-        # عرض السومات مرتبة من الأحدث إلى الأقدم
+        # عرض السومات مرتبة من الأحدث إلى الأقدم (تشمل الاسم وحساب ديسكورد)
         for bid in reversed(db["history"]):
-            st.markdown(f"👤 **{bid['name']}** سام بـ 💰 **{bid['amount']} $**")
+            st.markdown(f"👤 **{bid['name']}** (`{bid['discord']}`)")
+            st.markdown(f"💰 سام بـ **{bid['amount']} $**")
             st.caption(f"⏱️ {bid['time']}")
             st.write("---")
 
@@ -57,7 +62,7 @@ with col_main:
     # عرض الأسعار الحية الحقيقية من السيرفر المشترك
     c1, c2 = st.columns(2)
     with c1:
-        st.info(f"💰 **أعلى سعر حالي:**\n\n ### {db['current_price']} ريال")
+        st.info(f"💰 **أعلى سعر حالي:**\n\n ### {db['current_price']} $")
     with c2:
         st.success(f"👤 **المتصدّر الآن:**\n\n ### {db['highest_bidder']}")
 
@@ -66,29 +71,38 @@ with col_main:
     # منطقة المزاودة (تشتغل فقط إذا كان هناك وقت متبقي)
     if remaining_time > 0:
         st.subheader("سجّل سومك المباشر الآن 👇")
+        
+        # خانات الإدخال الجديدة
         user_name = st.text_input("اسم المزايد الكامل:", placeholder="اكتب اسمك هنا")
+        user_discord = st.text_input("حسابك في ديسكورد (Discord Username):", placeholder=": --------")
 
-        # حساب أقل سومة مسموحة (السعر الحالي + 100 ريال زيادة)
+        # حساب أقل سومة مسموحة (السعر الحالي + 5000 $ زيادة)
         min_next_bid = int(db["current_price"]) + 5000
-        bid_amount = st.number_input("قيمة مزاودتك (ريال):", min_value=min_next_bid, value=min_next_bid, step=5000)
+        bid_amount = st.number_input("قيمة مزاودتك ($):", min_value=min_next_bid, value=min_next_bid, step=5000)
 
         if st.button("🚀 اعتمد السومة لايف"):
-            if user_name.strip() == "":
-                st.error("الرجاء كتابة اسمك أولاً!")
+            if user_name.strip() == "" or user_discord.strip() == "":
+                st.error("الرجاء كتابة اسمك وحسابك في ديسكورد أولاً!")
+            
+            # ⛔ التحقق من البند عن طريق الديسكورد ⛔
+            elif user_discord.strip().lower() in [account.lower() for account in BANNED_DISCORD_ACCOUNTS]:
+                st.error("❌ عذراً، لقد تم حظرك من المشاركة في هذا المزاد!")
+                
             else:
                 # توقيت السومة الحالي
                 current_time_str = time.strftime('%H:%M:%S', time.localtime())
                 
-                # إضافة السومة الحالية في السجل (History)
+                # إضافة السومة الحالية في السجل (تشمل الاسم، السعر، والديسكورد)
                 db["history"].append({
                     "name": user_name,
+                    "discord": user_discord.strip(),
                     "amount": bid_amount,
                     "time": current_time_str
                 })
                 
-                # تحديث السعر الحالي والممتصدر
+                # تحديث السعر الحالي والممتصدر (يظهر الاسم والديسكورد فوق كمتصدر)
                 db["current_price"] = bid_amount
-                db["highest_bidder"] = user_name
+                db["highest_bidder"] = f"{user_name} ({user_discord})"
                 
                 st.balloons()
                 st.success(f"كفو يا {user_name}! تم تحديث المزاد عند الجميع بقيمة {bid_amount} ريال.")
@@ -96,7 +110,7 @@ with col_main:
                 st.rerun()
     else:
         # رسالة تظهر للجميع عند انتهاء الـ 5 دقائق وتعلن الفائز
-        st.success(f"🎉 **مبروك للفائز بالمزاد:** {db['highest_bidder']} بقيمة {db['current_price']} ريال")
+        st.success(f"🎉 **مبروك للفائز بالمزاد:** {db['highest_bidder']} بقيمة {db['current_price']} $")
 
 st.write("---")
 # 🔄 إعادة تحديث تلقائي للمتصفح كل ثانيتين لتحديث المؤقت والسومات الجديدة لايف عند الكل
