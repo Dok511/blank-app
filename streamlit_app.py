@@ -9,7 +9,7 @@ ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1509405559864950804/150
 
 # 🛑 القائمة السوداء لحسابات الديسكورد المتبندة 🛑
 # اكتب هنا يوزر ديسكورد الشخص اللي تبي تبنده (اكتبه بدقة مثل: g)
-BANNED_DISCORD_ACCOUNTS = ["banned_user_here", "another_banned_user"] 
+BANNED_DISCORD_ACCOUNTS = ["لللل", "another_banned_user"] 
 
 # إنشاء ذاكرة مشتركة حية على السيرفر لجميع المستخدمين
 @st.cache_resource
