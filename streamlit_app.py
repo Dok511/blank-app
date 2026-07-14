@@ -5,7 +5,7 @@ import time
 st.set_page_config(page_title="منصة المزاودة لا سيرفر لست دانس المباشرة", page_icon="🔨", layout="wide")
 
 # رابط صورة السلعة
-ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1509405559864950804/1509407923166773398/800px-Visione.webp?ex=6a19112c&is=6a17bfac&hm=91f82e24b96b57ae356667d0aee1c87c49def34e2ca8ccb3dc96d65014e3ba43"
+ITEM_IMAGE_URL = https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz_XVRMM0xSwRUAZsPGEGuYX7FAn2oanM3m4Earb13yA&s=10
 
 # 🛑 القائمة السوداء لحسابات الديسكورد المتبندة 🛑
 # اكتب هنا يوزر ديسكورد الشخص اللي تبي تبنده (اكتبه بدقة مثل: salman123)
