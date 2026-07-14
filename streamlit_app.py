@@ -5,7 +5,7 @@ import time
 st.set_page_config(page_title="منصة المزاودة لا سيرفر لست دانس المباشرة", page_icon="🔨", layout="wide")
 
 # رابط صورة السلعة
-ITEM_IMAGE_URL = https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz_XVRMM0xSwRUAZsPGEGuYX7FAn2oanM3m4Earb13yA&s=10
+ITEM_IMAGE_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTz_XVRMM0xSwRUAZsPGEGuYX7FAn2oanM3m4Earb13yA&s=10"
 
 # 🛑 القائمة السوداء لحسابات الديسكورد المتبندة 🛑
 # اكتب هنا يوزر ديسكورد الشخص اللي تبي تبنده (اكتبه بدقة مثل: salman123)
