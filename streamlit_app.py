@@ -2,10 +2,10 @@ import streamlit as st
 import time
 
 # إعدادات الصفحة
-st.set_page_config(page_title="منصة المزاودة لا سيرفر لست دانس المباشرة", page_icon="🔨", layout="wide")
+st.set_page_config(page_title="منصة المزاودة الملكية المباشرة", page_icon="🔨", layout="wide")
 
 # رابط صورة السلعة
-ITEM_IMAGE_URL = "https://cdn.discordapp.com/attachments/1509405559864950804/1509407923166773398/800px-Visione.webp?ex=6a19112c&is=6a17bfac&hm=91f82e24b96b57ae356667d0aee1c87c49def34e2ca8ccb3dc96d65014e3ba43"
+ITEM_IMAGE_URL = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=1000"
 
 # إنشاء ذاكرة مشتركة حية على السيرفر لجميع المستخدمين
 @st.cache_resource
@@ -20,7 +20,7 @@ def get_global_db():
 # استدعاء الذاكرة المشتركة
 db = get_global_db()
 
-st.title("🔨 منصة المزاودة لا سيرفر لست دانس المباشرة 🚀")
+st.title("🔨 منصة المزاودة الحية والمباشرة 🚀")
 st.write("---")
 
 # حساب الوقت المتبقي للمزاد لايف
@@ -37,7 +37,7 @@ with col_history:
     else:
         # عرض السومات مرتبة من الأحدث إلى الأقدم
         for bid in reversed(db["history"]):
-            st.markdown(f"👤 **{bid['name']}** سام بـ 💰 **{bid['amount']} $**")
+            st.markdown(f"👤 **{bid['name']}** سام بـ 💰 **{bid['amount']} ريال**")
             st.caption(f"⏱️ {bid['time']}")
             st.write("---")
 
@@ -69,8 +69,8 @@ with col_main:
         user_name = st.text_input("اسم المزايد الكامل:", placeholder="اكتب اسمك هنا")
 
         # حساب أقل سومة مسموحة (السعر الحالي + 100 ريال زيادة)
-        min_next_bid = int(db["current_price"]) + 5000
-        bid_amount = st.number_input("قيمة مزاودتك (ريال):", min_value=min_next_bid, value=min_next_bid, step=5000)
+        min_next_bid = int(db["current_price"]) + 100
+        bid_amount = st.number_input("قيمة مزاودتك (ريال):", min_value=min_next_bid, value=min_next_bid, step=100)
 
         if st.button("🚀 اعتمد السومة لايف"):
             if user_name.strip() == "":
